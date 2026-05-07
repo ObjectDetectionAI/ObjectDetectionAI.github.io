@@ -3,7 +3,6 @@
 import React, {useEffect, useRef, useState} from "react";
 import Webcam from "react-webcam";
 import {load as cocoSSDLoad} from "@tensorflow-models/coco-ssd";
-import * as tf from "@tensorflow/tfjs";
 import {renderPredictions} from "@/utils/render-predictions";
 
 let detectInterval;
@@ -110,33 +109,31 @@ const ObjectDetection = ({ predictions }) => {
   }, []);
 
   return (
-    <div className="mt-8">
+    <div className="mt-8 w-full max-w-6xl">
       {isLoading ? (
-        <div className="gradient-text">Loading AI Model...</div>
+        <div className="rounded-3xl bg-white/90 p-8 shadow-xl backdrop-blur-md text-slate-700 font-semibold text-center">
+          Loading AI Model...
+        </div>
       ) : (
-        <div className="relative flex justify-center items-center gradient p-1.5 rounded-md">
-          {/* webcam */}
+        <div className="relative flex justify-center items-center rounded-[32px] bg-white/90 p-1.5 shadow-2xl ring-1 ring-slate-200">
           <Webcam
             ref={webcamRef}
-            className="rounded-md w-full lg:h-[720px]"
+            className="rounded-[30px] w-full lg:h-[720px]"
             muted
             videoConstraints={videoConstraints}
           />
-          {/* canvas */}
           <canvas
             ref={canvasRef}
-            className="absolute top-0 left-0 z-99999 w-full lg:h-[720px]"
+            className="absolute top-0 left-0 z-10 w-full lg:h-[720px] rounded-[30px]"
           />
-          {/* switch camera button */}
-          <button 
-            onClick={switchCamera} 
-            className="absolute top-4 right-4 z-10000 bg-white p-2 rounded-md shadow-lg text-black font-bold"
-            style={{ zIndex: 10000 }}
+          <button
+            onClick={switchCamera}
+            className="absolute top-5 right-5 z-20 rounded-full bg-slate-950/90 px-4 py-2 text-sm font-semibold text-white shadow-lg transition hover:bg-slate-800"
           >
             Switch Camera
           </button>
           {isOffline && (
-            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-10000 bg-red-500 text-white p-2 rounded-md opacity-90 text-sm font-bold">
+            <div className="absolute bottom-4 left-1/2 z-20 -translate-x-1/2 rounded-full bg-amber-500/95 px-4 py-2 text-sm font-semibold text-slate-950 shadow-lg">
               The application is currently offline. Some features may not be available.
             </div>
           )}

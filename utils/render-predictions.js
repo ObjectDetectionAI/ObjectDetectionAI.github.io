@@ -1,6 +1,3 @@
-import * as tf from '@tensorflow/tfjs';
-import { throttle } from 'lodash';
-
 export function renderPredictions(predictions, canvas) {
   if (!(canvas instanceof HTMLCanvasElement)) {
     console.error('Invalid canvas element');
@@ -10,49 +7,27 @@ export function renderPredictions(predictions, canvas) {
   const ctx = canvas.getContext('2d');
   ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
-  // Fonts
-  const font = "16px sans-serif";
+  const font = "16px Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
   ctx.font = font;
   ctx.textBaseline = "top";
 
   predictions.forEach((prediction) => {
     const [x, y, width, height] = prediction["bbox"];
-
     const isPerson = prediction.class === "person";
 
-    // bounding box
-    ctx.strokeStyle = isPerson ? "#FF0000" : "#00FFFF";
+    ctx.strokeStyle = isPerson ? "#0EA5E9" : "#22C55E";
     ctx.lineWidth = 4;
     ctx.strokeRect(x, y, width, height);
 
-    // fill the color
-    ctx.fillStyle = `rgba(255, 0, 0, ${isPerson ? 0.2 : 0})`; // Set the fill color to red
+    ctx.fillStyle = isPerson ? "rgba(14, 165, 233, 0.18)" : "rgba(34, 197, 94, 0.14)";
     ctx.fillRect(x, y, width, height);
 
-    // Draw the label background.
-    ctx.fillStyle = isPerson ? "#FF0000" : "#00FFFF";
+    ctx.fillStyle = isPerson ? "#0EA5E9" : "#22C55E";
     const textWidth = ctx.measureText(prediction.class).width;
-    const textHeight = parseInt(font, 10); // base 10
-    ctx.fillRect(x, y, textWidth + 4, textHeight + 4);
+    const textHeight = 20;
+    ctx.fillRect(x, y, textWidth + 10, textHeight + 8);
 
-    ctx.fillStyle = "#000000";
-    ctx.fillText(prediction.class, x, y);
-
-    if (isPerson) {
-      playAudio();
-    }
+    ctx.fillStyle = "#ffffff";
+    ctx.fillText(prediction.class, x + 4, y + 4);
   });
 };
-
-let isAudioPlaying = false;
-
-const playAudio = throttle(() => {
-  if (!isAudioPlaying) {
-    const audio = new Audio("/Merry Christmas, Filthy Animal Sound.mp3");
-    isAudioPlaying = true;
-    audio.play();
-    audio.onended = () => {
-      isAudioPlaying = false;
-    };
-  }
-}, 2000);
