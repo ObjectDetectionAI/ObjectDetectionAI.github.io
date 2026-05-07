@@ -8,7 +8,7 @@ export default function Home() {
           Object Detection
         </h1>
         <p className="mt-4 text-slate-700 text-base md:text-lg lg:text-xl">
-          Detect people and everyday objects in real time using your webcam with a clean, modern interface.
+          Detect people and everyday objects in real time using your webcam.
         </p>
       </div>
       <ObjectDetection />

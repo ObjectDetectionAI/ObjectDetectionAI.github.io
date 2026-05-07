@@ -2,6 +2,7 @@
 
 import React, {useEffect, useRef, useState} from "react";
 import Webcam from "react-webcam";
+import * as tf from "@tensorflow/tfjs";
 import {load as cocoSSDLoad} from "@tensorflow-models/coco-ssd";
 import {renderPredictions} from "@/utils/render-predictions";
 
@@ -72,6 +73,14 @@ const ObjectDetection = ({ predictions }) => {
   useEffect(() => {
     const loadModel = async () => {
       try {
+        await tf.ready();
+        const backendSet = await tf.setBackend("webgl");
+        if (!backendSet) {
+          console.warn("WebGL backend unavailable, falling back to CPU.");
+          await tf.setBackend("cpu");
+        }
+        await tf.ready();
+
         const net = await cocoSSDLoad({base: 'lite_mobilenet_v2'});
         setIsLoading(false);
         detectInterval = setInterval(() => {
@@ -84,6 +93,12 @@ const ObjectDetection = ({ predictions }) => {
 
     loadModel();
     showmyVideo();
+
+    return () => {
+      if (detectInterval) {
+        clearInterval(detectInterval);
+      }
+    };
   }, [facingMode]);
 
   useEffect(() => {
